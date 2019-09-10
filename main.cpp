@@ -1,47 +1,14 @@
-#include <QCoreApplication>
-#include <QtDebug>
+#include <chrono>
+#include <iostream>
 
 #include "heap_sort.hpp"
 #include "quick_sort.hpp"
+#include "interval.hpp"
 
-#include <iostream>
-
-std::vector<int> v{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
-
-template <typename Iterator>
-void max_sum(std::vector<int>& n, Iterator start, Iterator stop) {
-    using std::swap;
-    using ElementType = typename std::iterator_traits<Iterator>::value_type;
-
-    n[11] = -50;
-
-    auto s = 0,
-         answer = 0,
-         min_pos = -1,
-         answer_l = 0, answer_r = 0;
-
-    for (std::size_t r = 0; r < n.size(); ++r) {
-        s += *(start + r);
-
-        if (s > answer) {
-            answer = s;
-            answer_l = min_pos + 1;
-            answer_r = r;
-        }
-
-        if (s < 0) {
-            s = 0;
-            min_pos = r;
-        }
-    }
-
-    std::cout << std::endl;
-}
-
-int main(int argc, char *argv[])
+int main(int, char *[])
 {
     namespace chrono = std::chrono;
-    QCoreApplication a(argc, argv);
+    std::vector<int> v{9, 8, 7, 6, 5, 4, 3, 2, 1, 0};
 
     alg::heap_sort(std::begin(v), std::end(v));
 
@@ -64,7 +31,12 @@ int main(int argc, char *argv[])
     std::vector<int> vec(20);
     std::generate(begin(vec), end(vec), [&]() { return dist(g); });
 
-    max_sum(vec, begin(vec), end(vec));
+    auto [b, e, m] = alg::interval::max_sum(begin(vec), end(vec));
+
+    while (b != e)
+        std::cout << *b++ << " ";
+
+    std::cout << " = " << m << std::endl;
 
     return EXIT_SUCCESS;
 }

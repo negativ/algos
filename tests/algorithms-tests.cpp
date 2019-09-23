@@ -9,6 +9,7 @@
 
 #include <heap_sort.hpp>
 #include <quick_sort.hpp>
+#include <interval.hpp>
 
 class HeapSortTest: public ::testing::Test {
 protected:
@@ -50,7 +51,7 @@ TEST_F(HeapSortTest, ShuffleAndSort) {
 }
 
 TEST_F(HeapSortTest, SortSmallVector) {
-    v = std::vector<int>{1, 2};
+    v = {1, 2};
     auto v1 = v;
 
     ASSERT_EQ(v, v1);
@@ -72,7 +73,7 @@ TEST_F(HeapSortTest, SortVectorOfOnes) {
 }
 
 TEST_F(HeapSortTest, SortDescending) {
-    v = std::vector<int>{-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9};
+    v = {-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9};
 
     shuffle();
 
@@ -80,6 +81,23 @@ TEST_F(HeapSortTest, SortDescending) {
 
     ASSERT_FALSE(std::is_sorted(std::begin(v), std::end(v)));
     ASSERT_TRUE(std::is_sorted(std::rbegin(v), std::rend(v)));
+}
+
+TEST_F(HeapSortTest, SortEmpty) {
+    v.clear();
+
+    alg::heap_sort(std::begin(v), std::end(v));
+
+    ASSERT_TRUE(v.empty());
+}
+
+TEST_F(HeapSortTest, SortSorted) {
+    v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    auto v1 = v;
+
+    alg::heap_sort(std::begin(v), std::end(v));
+
+    ASSERT_EQ(v, v1);
 }
 
 class QuickSortTest: public ::testing::Test {
@@ -127,7 +145,6 @@ TEST_F(QuickSortTest, ShuffleAndSort) {
     ASSERT_TRUE(std::is_sorted(std::begin(v), std::end(v)));
 }
 
-
 TEST_F(QuickSortTest, SortSmallVector) {
     v = std::vector<int>{1, 2};
     auto v1 = v;
@@ -159,6 +176,56 @@ TEST_F(QuickSortTest, SortDescending) {
 
     ASSERT_FALSE(std::is_sorted(std::begin(v), std::end(v)));
     ASSERT_TRUE(std::is_sorted(std::rbegin(v), std::rend(v)));
+}
+
+TEST_F(QuickSortTest, SortEmpty) {
+    v.clear();
+
+    alg::quick_sort(std::begin(v), std::end(v));
+
+    ASSERT_TRUE(v.empty());
+}
+
+TEST_F(QuickSortTest, SortSorted) {
+    v = {1, 2, 3, 4, 5, 6, 7, 8, 9};
+    auto v1 = v;
+
+    alg::quick_sort(std::begin(v), std::end(v));
+
+    ASSERT_EQ(v, v1);
+}
+
+TEST(IntervalTest, ZeroInput) {
+    std::vector<int> v = {0, 0, 0, 0, 0};
+
+    auto [start, stop, val] = alg::interval::max_sum(std::begin(v), std::end(v));
+
+    ASSERT_EQ(start, std::begin(v));
+    ASSERT_EQ(stop,  std::begin(v) + 1);
+    ASSERT_EQ(val, 0);
+}
+
+TEST(IntervalTest, ConstantFillInput) {
+    for (auto i = 1; i < 100; ++i) {
+        std::vector<int> v(100, i);
+
+        auto [start, stop, val] = alg::interval::max_sum(std::begin(v), std::end(v));
+
+        ASSERT_EQ(start, std::begin(v));
+        ASSERT_EQ(stop,  std::end(v));
+        ASSERT_EQ(val, i * v.size());
+    }
+
+}
+
+TEST(IntervalTest, Input) {
+    std::vector<int> v{1, 2, 3, 4, -11, 5, 6, 7, 8};
+
+    auto [start, stop, val] = alg::interval::max_sum(std::begin(v), std::end(v));
+
+    ASSERT_EQ(start, std::begin(v) + 5);
+    ASSERT_EQ(stop,  std::end(v));
+    ASSERT_EQ(val, std::accumulate(start, stop, 0));
 }
 
 int main(int argc, char **argv) {

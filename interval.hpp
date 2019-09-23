@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iterator>
+#include <limits>
 #include <tuple>
 
 namespace alg {
@@ -12,7 +13,7 @@ namespace interval {
  */
 template <typename Iterator, typename Value = typename std::iterator_traits<Iterator>::value_type>
 std::tuple<Iterator, Iterator, Value> max_sum(Iterator start, Iterator stop) {
-    Value s{}, ans{};
+    Value s{}, ans{std::numeric_limits<Value>::min()};
     auto l = start,
          r = start,
          it = start,

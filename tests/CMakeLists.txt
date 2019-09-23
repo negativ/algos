@@ -11,7 +11,7 @@ find_package(GTest REQUIRED)
 
 include(GoogleTest)
 
-include_directories(${GTEST_INCLUDE_DIR})
+include_directories(${GTEST_INCLUDE_DIR} "${CMAKE_CURRENT_SOURCE_DIR}/..")
 
 add_executable(algorithms-tests algorithms-tests.cpp)
 

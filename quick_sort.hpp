@@ -2,7 +2,6 @@
 
 #include <algorithm>
 #include <iterator>
-#include <random>
 
 namespace alg {
 
@@ -41,15 +40,14 @@ void __quick_sort_helper(Iterator start, Iterator stop, LessPred lesseq) {
     }
 }
 
+/**
+ *  Warning! Works great on randomly shuffled data, on sorted data regresses to O(N^2).
+ *  Use std::random_shuffle for data if not sure that is random.
+ */
 template <typename Iterator,
           typename ElementType = typename std::iterator_traits<Iterator>::value_type,
           typename LessPred = typename std::less<ElementType>>
 void quick_sort(Iterator start, Iterator stop, LessPred less = LessPred{}) {
-//    std::random_device rd;
-//    std::mt19937 g(rd());
-
-//    std::shuffle(start, stop, g);
-
     __quick_sort_helper<Iterator, ElementType, LessPred> (start, stop, less);
 }
 

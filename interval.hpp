@@ -4,6 +4,8 @@
 #include <limits>
 #include <tuple>
 
+#include <vector>
+
 namespace alg {
 
 namespace interval {
@@ -40,6 +42,45 @@ std::tuple<Iterator, Iterator, Value> max_sum(Iterator start, Iterator stop) {
     }
 
     return {l, r + 1, ans};
+}
+
+template <typename ForwIterator, typename RAIterator>
+void z(ForwIterator start, ForwIterator stop, RAIterator out) {
+    static_assert (std::is_same<typename std::iterator_traits<RAIterator>::iterator_category, std::random_access_iterator_tag>::value, "Out iterator must be random-access");
+
+    auto len = std::abs(std::distance(start, stop));
+    auto l = start, r = start;
+
+    for (size_t i = 1; i < len; ++i) {
+        if (r < start + i) {
+            size_t count = 0;
+
+            while (*(start + count) == *(start + i + count))
+                ++count;
+
+            *(out + i) = count;
+
+            if (count > 0) { // Z-block found
+                l = start + i;
+                r = start + i + count - 1;
+            }
+        }
+        else {
+            auto j = (start + i) - l;
+            auto b = r - (start + i) + 1;
+
+            if (*(out + j) < b) // inside Z-block
+                *(out + i) = *(out + j);
+            else {
+                size_t q = std::abs(std::distance(start, r + 1));
+                for (; *(start + b++) == *(start + q); ++q);
+
+                *(out + i) = q - i;
+                l = start + i;
+                r = start + q - 1;
+            }
+        }
+    }
 }
 
 }

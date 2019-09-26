@@ -115,12 +115,6 @@ protected:
         std::shuffle(std::begin(v), std::end(v), g);
     }
 
-    void print() {
-        for (const auto& x : v)
-            std::cout << x << " ";
-        std::cout << std::endl;
-    }
-
     std::vector<int> v{-2, -1, 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 9};
 
 private:
@@ -213,7 +207,7 @@ TEST(IntervalTest, ConstantFillInput) {
 
         ASSERT_EQ(start, std::begin(v));
         ASSERT_EQ(stop,  std::end(v));
-        ASSERT_EQ(val, i * v.size());
+        ASSERT_EQ(val, size_t(i) * v.size());
     }
 
 }
@@ -226,6 +220,92 @@ TEST(IntervalTest, Input) {
     ASSERT_EQ(start, std::begin(v) + 5);
     ASSERT_EQ(stop,  std::end(v));
     ASSERT_EQ(val, std::accumulate(start, stop, 0));
+}
+
+TEST(IntervalTest, Z_functionTest) {
+    {
+        std::string S = "abacaba";
+        std::vector<int> ans{0, 0, 1, 0, 3, 0 ,1};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::begin(S), std::end(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "aaaaa";
+        std::vector<int> ans{0, 4, 3, 2, 1};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::begin(S), std::end(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "aaabaab";
+        std::vector<int> ans{0, 2, 1, 0, 2, 1, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::begin(S), std::end(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "aabcaabxaaz";
+        std::vector<int> ans{0, 1, 0, 0, 3, 1, 0, 0, 2, 1, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::begin(S), std::end(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "abcdefgh";
+        std::vector<int> ans{0, 0, 0, 0, 0, 0, 0, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::begin(S), std::end(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+}
+
+TEST(IntervalTest, Z_functionInvertedTest) {
+    {
+        std::string S = "abacaba";
+        std::vector<int> ans{0, 0, 1, 0, 3, 0 ,1};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::rbegin(S), std::rend(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "aaaaa";
+        std::vector<int> ans{0, 4, 3, 2, 1};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::rbegin(S), std::rend(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "baabaaa";
+        std::vector<int> ans{0, 2, 1, 0, 2, 1, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::rbegin(S), std::rend(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "zaaxbaacbaa";
+        std::vector<int> ans{0, 1, 0, 0, 3, 1, 0, 0, 2, 1, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::rbegin(S), std::rend(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
+    {
+        std::string S = "hgfedcba";
+        std::vector<int> ans{0, 0, 0, 0, 0, 0, 0, 0};
+        std::vector<int> zs(S.size());
+        alg::interval::z(std::rbegin(S), std::rend(S), std::begin(zs));
+
+        ASSERT_EQ(zs, ans);
+    }
 }
 
 int main(int argc, char **argv) {
